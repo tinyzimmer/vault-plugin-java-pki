@@ -12,6 +12,12 @@ It provides additional `format` options when attempting to issue a certificate.
 
 ## Installation
 
+Ensure `go` on your system, then retrieve the source:
+
+```bash
+$> go get github.com/tinyzimmer/vault-plugin-java-pki
+```
+
 First configure a `plugin_directory` in vault:
 
 ```hcl
@@ -20,11 +26,13 @@ First configure a `plugin_directory` in vault:
 plugin_directory = "/tmp/vault-plugins"
 ```
 
-Once vault is started with the above configuration, you can proceed to build and register the plugin. If you use the `Makefile` ensure the requirements found below.
+Once vault is started with the above configuration, you can proceed to build and register the plugin. If you use the `Makefile`, ensure the requirements found below.
+The `Makefile` is not required, and you can run the steps in the build target manually with any other arguments you need.
 
 If you are running vault on Linux:
 
 ```bash
+$> cd "$GOPATH/src/github.com/tinyzimmer/vault-plugin-java-pki"
 $> make build_plugin
 $> cp bin/vault-plugin-java-pki /tmp/vault-plugins/
 $> SHASUM=$(shasum -a 256 /tmp/vault-plugins/vault-plugin-java-pki | cut -d ' ' -f1)
