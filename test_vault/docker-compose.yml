@@ -1,0 +1,10 @@
+version: '3'
+services:
+  vault:
+    image: "vault"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "devroottoken"
+    ports:
+      - "8200:8200"
+    volumes:
+      - "./config.hcl:/vault/config/config.hcl"
