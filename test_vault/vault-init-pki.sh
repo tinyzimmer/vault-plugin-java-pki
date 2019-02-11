@@ -19,7 +19,7 @@ vault write sys/plugins/catalog/java-pki \
   sha_256="${SHASUM}" \
   command=vault-plugin-java-pki
 
-# Create the pki backend for kafka
+# Create the pki backend
 vault secrets enable -path=pki_java java-pki
 vault secrets tune -max-lease-ttl=210000h pki_java
 
@@ -34,7 +34,7 @@ intermediate=$(vault write -format=json pki/root/sign-intermediate \
     format=pem_bundle \
     ttl=209999h | jq -r '.data.certificate')
 
-# write the signed cert back to kafka pki
+# write the signed cert back to pki
 vault write pki_java/intermediate/set-signed certificate="${intermediate}"
 
 # Set information about the crl and so on
@@ -53,4 +53,5 @@ vault write pki_java/roles/test \
     allow_glob_domains=true \
     organization="Testing" \
     use_csr_common_name=false \
-    use_csr_sans=false
+    use_csr_sans=false \
+    key_bits=1024

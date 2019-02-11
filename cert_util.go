@@ -154,6 +154,7 @@ func validateKeyTypeLength(keyType string, keyBits int) *logical.Response {
 	switch keyType {
 	case "rsa":
 		switch keyBits {
+		case 1024:
 		case 2048:
 		case 4096:
 		case 8192:
@@ -555,10 +556,10 @@ func generateCert(ctx context.Context,
 	if data.role == nil {
 		return nil, errutil.InternalError{Err: "no role found in data bundle"}
 	}
-
-	if data.role.KeyType == "rsa" && data.role.KeyBits < 2048 {
-		return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
-	}
+	//
+	// if data.role.KeyType == "rsa" && data.role.KeyBits < 2048 {
+	// 	return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
+	// }
 
 	err := generateCreationBundle(b, data)
 	if err != nil {

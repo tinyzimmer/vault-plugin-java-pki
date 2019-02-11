@@ -10,6 +10,9 @@ It provides additional `format` options when attempting to issue a certificate.
 |`format`| In addition to the builtin formats, provides a `jks` option|
 |`password`| When requesting a `jks` keystore, the password to encrypt the private key with|
 
+When creating a role for issuing certificates, the backend will allow `key_bits=1024`.
+Vault itself prohibits this for good reason, however there are use cases for embedded devices that further encrypt their traffic via other means.
+
 ## Installation
 
 Ensure `go` on your system, then retrieve the source:
