@@ -14,7 +14,7 @@ endif
 
 build_plugin:
 	go get -d ./...
-	cd cmd/vault-plugin-java-pki && GOOS=linux go build -o ../../bin/vault-plugin-java-pki .
+	cd cmd/vault-plugin-java-pki && CGO_ENABLED=0 GOOS=linux go build -o ../../bin/vault-plugin-java-pki .
 
 clean: clean_test_vault
 	rm -rf bin
