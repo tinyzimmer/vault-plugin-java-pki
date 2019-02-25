@@ -32,6 +32,7 @@ import (
 	"golang.org/x/crypto/cryptobyte"
 	cbbasn1 "golang.org/x/crypto/cryptobyte/asn1"
 	"golang.org/x/net/idna"
+	pkcs12 "software.sslmate.com/src/go-pkcs12"
 )
 
 type certExtKeyUsage int
@@ -144,6 +145,7 @@ func getFormat(data *framework.FieldData) string {
 	case "der":
 	case "pem_bundle":
 	case "jks":
+	case "pfx":
 	default:
 		format = ""
 	}
@@ -1717,5 +1719,25 @@ func EncodePEMToJKS(pb *certutil.ParsedCertBundle, cb *certutil.CertBundle, pass
 		return "", err
 	}
 	encoded := base64.StdEncoding.EncodeToString(out.Bytes())
+	return encoded, nil
+}
+
+func EncodeToPFX(pb *certutil.ParsedCertBundle, passw string) (string, error) {
+	priv, err := x509.ParsePKCS1PrivateKey(pb.PrivateKeyBytes)
+	if err != nil {
+		return "", err
+	}
+	chain := make([]*x509.Certificate, 0)
+	for _, block := range pb.CAChain {
+		chain = append(chain, block.Certificate)
+	}
+	pfx, err := pkcs12.Encode(
+		rand.Reader,
+		priv,
+		pb.Certificate,
+		chain,
+		passw,
+	)
+	encoded := base64.StdEncoding.EncodeToString(pfx)
 	return encoded, nil
 }
