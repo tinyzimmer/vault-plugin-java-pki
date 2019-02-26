@@ -1,5 +1,7 @@
 # JKS Extended Vault PKI Plugin
 
+[![Build Status](https://travis-ci.org/tinyzimmer/vault-plugin-java-pki.svg?branch=master)](https://travis-ci.org/tinyzimmer/vault-plugin-java-pki)
+
 This plugin is mostly a fork of the builtin [Vault PKI plugin](https://github.com/hashicorp/vault/tree/master/builtin/logical/pki).
 It provides additional `format` options when attempting to issue a certificate.
 
