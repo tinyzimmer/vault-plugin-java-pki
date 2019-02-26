@@ -1,0 +1,15 @@
+language: go
+services:
+- docker
+go:
+- 1.11.x
+script:
+- make build_plugin
+- make testacc
+deploy:
+  provider: releases
+  api_key:
+    secure: ZNquVCErOanfP3HI9cQcAhGwsE7igSV58ieoIssGWHbRou2lmc4MtBqkewCP0E56SJuSuW6NKeKG6bHfBZaF8OZ6xu78hZH70dTfGE1kDkP+oKDTDcqqhqHhyqVZglwbnSI7knqKAvOkNzTECGt0aUXYikw7S9l7c/RSHsl1dc0ZPgN4UxHpWCouSEcMwg1RrMvLzB9Qw1wSI22IqqEMUdi/1YwkANUGxL+viFokSxz6Bospayegy4upHH8/sngf2HYavT1HeS8orA+N43Q/Sjnd9OAGJZNb3IAtd6peNYkdywcvpEQTR1ZqKitWA9bSwJ2DevCPbtTXg5aLNPAMIj4VT1QSzXF/0wQMBba/zMg2TAjTrxM/MuG7/LEPZiEzwctci8nIY4tI8et75EM0tGTZ1jawY38+kBta8ox3WMVZdqaKBdSWZ7KCUWlLwjJONAdArv0YVs2FGKwhbESJ+NY5ig/Hp/az64FlFu4l+1U1sUaPsA23K1eJRglKGkUwBNNS/7Xikb/QErVI9J8kbFEPixMW8Z2WUVpzvndQSQP2/4qul4zYbURUrQ1IacBK04Zo2Fn65RApGPm6tcXIIVgt3BAm1jYHqD6dp1OZQABTBCFc/CCDLVj3x6f3wfK03xj6VE7+lnYSidssNtGyrsocWocuzx52+7+67N1+1pY=
+  file: bin/vault-plugin-java-pki
+  on:
+    tags: true
