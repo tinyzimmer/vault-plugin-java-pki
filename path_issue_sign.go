@@ -191,12 +191,12 @@ func (b *backend) pathIssueSignCert(ctx context.Context, req *logical.Request, d
 	format := getFormat(data)
 	if format == "" {
 		return logical.ErrorResponse(
-			`the "format" path parameter must be "pem", "der", "pem_bundle", or "jks"`), nil
+			`the "format" path parameter must be "pem", "der", "pem_bundle", "pfx", or "jks"`), nil
 	}
-	if format == "jks" {
+	if format == "jks" || format == "pfx" {
 		if data.Get("password").(string) == "" {
 			return logical.ErrorResponse(
-				`you must specify "password" when requesting jks format`), nil
+				`you must specify "password" when requesting jks or pfxformat`), nil
 		}
 	}
 
@@ -295,6 +295,14 @@ func (b *backend) pathIssueSignCert(ctx context.Context, req *logical.Request, d
 			return nil, err
 		}
 		respData["jks_encoded"] = jksEncoded
+
+	case "pfx":
+		passw := data.Get("password").(string)
+		pfxEncoded, err := EncodeToPFX(parsedBundle, passw)
+		if err != nil {
+			return nil, err
+		}
+		respData["pfx_encoded"] = pfxEncoded
 	}
 
 	var resp *logical.Response

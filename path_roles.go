@@ -61,7 +61,7 @@ name in a request`,
 				Description: `If set, clients can request certificates for
 subdomains directly beneath these domains, including
 the wildcard subdomains. See the documentation for more
-information. This parameter accepts a comma-separated 
+information. This parameter accepts a comma-separated
 string or list of domains.`,
 			},
 
@@ -267,7 +267,7 @@ leases adversely affect the startup time of Vault.`,
 				Type: framework.TypeBool,
 				Description: `
 If set, certificates issued/signed against this role will not be stored in the
-storage backend. This can improve performance when issuing large numbers of 
+storage backend. This can improve performance when issuing large numbers of
 certificates. However, certificates issued in this way cannot be enumerated
 or revoked, so this option is recommended only for certificates that are
 non-sensitive, or extremely short-lived. This option implies a value of "false"
@@ -517,9 +517,9 @@ func (b *backend) pathRoleCreate(ctx context.Context, req *logical.Request, data
 		*entry.GenerateLease = data.Get("generate_lease").(bool)
 	}
 
-	if entry.KeyType == "rsa" && entry.KeyBits < 2048 {
-		return logical.ErrorResponse("RSA keys < 2048 bits are unsafe and not supported"), nil
-	}
+	// if entry.KeyType == "rsa" && entry.KeyBits < 2048 {
+	// 	return logical.ErrorResponse("RSA keys < 2048 bits are unsafe and not supported"), nil
+	// }
 
 	if entry.MaxTTL > 0 && entry.TTL > entry.MaxTTL {
 		return logical.ErrorResponse(

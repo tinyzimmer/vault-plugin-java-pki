@@ -32,6 +32,7 @@ import (
 	"golang.org/x/crypto/cryptobyte"
 	cbbasn1 "golang.org/x/crypto/cryptobyte/asn1"
 	"golang.org/x/net/idna"
+	pkcs12 "software.sslmate.com/src/go-pkcs12"
 )
 
 type certExtKeyUsage int
@@ -144,6 +145,7 @@ func getFormat(data *framework.FieldData) string {
 	case "der":
 	case "pem_bundle":
 	case "jks":
+	case "pfx":
 	default:
 		format = ""
 	}
@@ -154,6 +156,7 @@ func validateKeyTypeLength(keyType string, keyBits int) *logical.Response {
 	switch keyType {
 	case "rsa":
 		switch keyBits {
+		case 1024:
 		case 2048:
 		case 4096:
 		case 8192:
@@ -555,10 +558,10 @@ func generateCert(ctx context.Context,
 	if data.role == nil {
 		return nil, errutil.InternalError{Err: "no role found in data bundle"}
 	}
-
-	if data.role.KeyType == "rsa" && data.role.KeyBits < 2048 {
-		return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
-	}
+	//
+	// if data.role.KeyType == "rsa" && data.role.KeyBits < 2048 {
+	// 	return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
+	// }
 
 	err := generateCreationBundle(b, data)
 	if err != nil {
@@ -1716,5 +1719,25 @@ func EncodePEMToJKS(pb *certutil.ParsedCertBundle, cb *certutil.CertBundle, pass
 		return "", err
 	}
 	encoded := base64.StdEncoding.EncodeToString(out.Bytes())
+	return encoded, nil
+}
+
+func EncodeToPFX(pb *certutil.ParsedCertBundle, passw string) (string, error) {
+	priv, err := x509.ParsePKCS1PrivateKey(pb.PrivateKeyBytes)
+	if err != nil {
+		return "", err
+	}
+	chain := make([]*x509.Certificate, 0)
+	for _, block := range pb.CAChain {
+		chain = append(chain, block.Certificate)
+	}
+	pfx, err := pkcs12.Encode(
+		rand.Reader,
+		priv,
+		pb.Certificate,
+		chain,
+		passw,
+	)
+	encoded := base64.StdEncoding.EncodeToString(pfx)
 	return encoded, nil
 }

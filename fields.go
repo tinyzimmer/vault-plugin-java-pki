@@ -17,7 +17,7 @@ Defaults to false (CN is included).`,
 		Type:    framework.TypeString,
 		Default: "pem",
 		Description: `Format for returned data. Can be "pem", "der",
-"pem_bundle", or "jks". If "pem_bundle" any private
+"pem_bundle", "pfx", or "jks". If "pem_bundle" any private
 key and issuing cert will be appended to the
 certificate pem. Defaults to "pem".`,
 	}
