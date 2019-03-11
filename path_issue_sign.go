@@ -196,7 +196,11 @@ func (b *backend) pathIssueSignCert(ctx context.Context, req *logical.Request, d
 	if format == "jks" || format == "pfx" {
 		if data.Get("password").(string) == "" {
 			return logical.ErrorResponse(
-				`you must specify "password" when requesting jks or pfxformat`), nil
+				`you must specify "password" when requesting jks or pfx format`), nil
+		}
+		if containsUppercase(data.Get("common_name").(string)) {
+			return logical.ErrorResponse(
+				`Common name's with uppercase letters is unsupported using jks or pfx format`), nil
 		}
 	}
 
