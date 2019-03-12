@@ -662,11 +662,6 @@ func signCert(b *backend,
 			return nil, errutil.UserError{Err: "could not parse CSR's public key"}
 		}
 
-		// Verify that the key is at least 2048 bits
-		if pubKey.N.BitLen() < 2048 {
-			return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
-		}
-
 		// Verify that the bit size is at least the size specified in the role
 		if pubKey.N.BitLen() < data.role.KeyBits {
 			return nil, errutil.UserError{Err: fmt.Sprintf(
@@ -703,12 +698,9 @@ func signCert(b *backend,
 		}
 
 		// Run RSA < 2048 bit checks
-		pubKey, ok := csr.PublicKey.(*rsa.PublicKey)
+		_, ok := csr.PublicKey.(*rsa.PublicKey)
 		if !ok {
 			return nil, errutil.UserError{Err: "could not parse CSR's public key"}
-		}
-		if pubKey.N.BitLen() < 2048 {
-			return nil, errutil.UserError{Err: "RSA keys < 2048 bits are unsafe and not supported"}
 		}
 
 	}
@@ -1697,12 +1689,16 @@ func EncodePEMToJKS(pb *certutil.ParsedCertBundle, cb *certutil.CertBundle, pass
 	var out bytes.Buffer
 	var err error
 	certBundle, trusted := certBundleToKeystoreChain(cb)
+	parsedKey, err := x509.MarshalPKCS8PrivateKey(pb.PrivateKey)
+	if err != nil {
+		return "", err
+	}
 	jks := keystore.KeyStore{
 		pb.Certificate.Subject.CommonName: &keystore.PrivateKeyEntry{
 			Entry: keystore.Entry{
 				CreationDate: time.Now(),
 			},
-			PrivKey:   []byte(cb.PrivateKey),
+			PrivKey:   parsedKey,
 			CertChain: certBundle,
 		},
 	}
