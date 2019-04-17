@@ -1221,7 +1221,14 @@ func createCertificate(data *dataBundle) (*certutil.ParsedCertBundle, error) {
 	if data.signingBundle != nil {
 		switch data.signingBundle.PrivateKeyType {
 		case certutil.RSAPrivateKey:
-			certTemplate.SignatureAlgorithm = x509.SHA256WithRSA
+			switch data.apiData.Get("sig_algorithm").(string) {
+			case "sha1":
+				certTemplate.SignatureAlgorithm = x509.SHA1WithRSA
+			case "sha256":
+				certTemplate.SignatureAlgorithm = x509.SHA256WithRSA
+			default:
+				certTemplate.SignatureAlgorithm = x509.SHA256WithRSA
+			}
 		case certutil.ECPrivateKey:
 			certTemplate.SignatureAlgorithm = x509.ECDSAWithSHA256
 		}

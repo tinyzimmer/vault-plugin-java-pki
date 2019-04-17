@@ -30,6 +30,12 @@ the keystore with.
 `,
 	}
 
+	fields["sig_algorithm"] = &framework.FieldSchema{
+		Type:        framework.TypeString,
+		Default:     "sha256",
+		Description: `The signing algorithm to use when issuing certificates.`,
+	}
+
 	fields["private_key_format"] = &framework.FieldSchema{
 		Type:    framework.TypeString,
 		Default: "der",
